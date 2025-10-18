@@ -4,7 +4,7 @@ FROM ubuntu:24.04
 ARG IMAGE_VERSION=0.0.1
 
 # Set quarto version
-ARG QUARTO_VERSION=1.9.2
+ARG QUARTO_VERSION=1.9.8
 ENV QUARTO_VERSION=${QUARTO_VERSION}
 
 RUN apt-get update && apt-get install -y \
