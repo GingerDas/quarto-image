@@ -1,0 +1,12 @@
+[project]
+name = "quarto-python-env"
+version = "0.1.0"
+description = "Python environment for Quarto with essential data visualization packages"
+requires-python = ">=3.10"
+dependencies = [
+    "plotly",
+]
+
+[tool.uv]
+# Use system Python instead of managing Python versions
+python-preference = "only-system"

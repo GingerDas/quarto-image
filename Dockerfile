@@ -21,20 +21,28 @@ RUN apt-get update && apt-get install -y \
 
 CMD ["quarto", "--help"]
 
-# Python stage: Quarto with Python and Jupyter
+# Python stage: Quarto with Python and UV package manager
 FROM base AS python
 
+# Copy Python project configuration and install dependencies
+COPY pyproject.toml uv.lock ./
+
+# Add UV to PATH
+ENV PATH="/root/.local/bin:${PATH}"
+
+# Install system dependencies and UV
 RUN apt-get update && apt-get install -y \
     curl \
     python3 \
-    python3-pip \
-    && pip3 install jupyter --break-system-packages \
+    ca-certificates \
+    && curl -LsSf https://astral.sh/uv/install.sh | sh \
     && curl -LO https://github.com/quarto-dev/quarto-cli/releases/download/v${QUARTO_VERSION}/quarto-${QUARTO_VERSION}-linux-amd64.deb \
     && dpkg -i quarto-${QUARTO_VERSION}-linux-amd64.deb \
     && rm quarto-${QUARTO_VERSION}-linux-amd64.deb \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
-    && rm -rf /var/cache/apt/archives/*
+    && rm -rf /var/cache/apt/archives/* \
+    && uv sync --frozen
 
 CMD ["quarto", "--help"]
 
