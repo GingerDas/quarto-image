@@ -24,6 +24,12 @@ CMD ["quarto", "--help"]
 # Python stage: Quarto with Python and UV package manager
 FROM base AS python
 
+# Copy Python project configuration and install dependencies
+COPY pyproject.toml uv.lock ./
+
+# Add UV to PATH
+ENV PATH="/root/.local/bin:${PATH}"
+
 # Install system dependencies and UV
 RUN apt-get update && apt-get install -y \
     curl \
@@ -35,14 +41,8 @@ RUN apt-get update && apt-get install -y \
     && rm quarto-${QUARTO_VERSION}-linux-amd64.deb \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
-    && rm -rf /var/cache/apt/archives/*
-
-# Add UV to PATH
-ENV PATH="/root/.local/bin:${PATH}"
-
-# Copy Python project configuration and install dependencies
-COPY pyproject.toml .
-RUN uv sync --frozen
+    && rm -rf /var/cache/apt/archives/* \
+    && uv sync --frozen
 
 CMD ["quarto", "--help"]
 
